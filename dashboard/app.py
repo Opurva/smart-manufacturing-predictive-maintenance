@@ -294,9 +294,11 @@ elif page == "🧠 Explainability":
         st.dataframe(importance_df)
 
         fig, ax = plt.subplots(figsize=(10, 6))
+        value_col = "Importance" if "Importance" in importance_df.columns else "Mean SHAP Value"
+
         sns.barplot(
             data=importance_df.head(10),
-            x="Importance",
+            x=value_col,
             y="Feature",
             ax=ax
         )
