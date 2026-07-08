@@ -1,0 +1,5 @@
+Model,Training Time (seconds)
+Logistic Regression,0.3668
+Decision Tree,0.4569
+Random Forest,1.0352
+XGBoost,1.0352
