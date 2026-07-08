@@ -24,30 +24,12 @@ PREPROCESSING_PATH = BASE_DIR / "models" / "preprocessing"
 REPORTS_PATH = BASE_DIR / "reports"
 DATASET_PATH = BASE_DIR / "dataset"
 
-# -----------------------------
-# Custom CSS
-# -----------------------------
-st.markdown("""
-<style>
-.main-title {
-    font-size: 48px;
-    font-weight: 800;
-}
-.card {
-    padding: 22px;
-    border-radius: 14px;
-    background-color: #111827;
-    border: 1px solid #374151;
-}
-.metric-card {
-    padding: 20px;
-    border-radius: 14px;
-    background-color: #0f172a;
-    border: 1px solid #334155;
-    text-align: center;
-}
-</style>
-""", unsafe_allow_html=True)
+def load_css(css_path):
+    with open(css_path, "r", encoding="utf-8") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+
+load_css(BASE_DIR / "dashboard" / "assets" / "styles.css")
 
 # -----------------------------
 # Helper Functions
@@ -97,10 +79,15 @@ def get_recommendation(probability, tool_wear, torque, temp_diff):
 # -----------------------------
 # Sidebar
 # -----------------------------
-st.sidebar.title("🏭 Navigation")
+st.sidebar.markdown("""
+<div class="sidebar-brand">
+    <div class="sidebar-title">🏭 SmartFactory AI</div>
+    <div class="sidebar-subtitle">Company-Inspired Predictive Maintenance Prototype</div>
+</div>
+""", unsafe_allow_html=True)
 
 page = st.sidebar.radio(
-    "Go to",
+    "Navigation",
     [
         "🏠 Home",
         "🤖 Predict Failure",
@@ -114,45 +101,88 @@ page = st.sidebar.radio(
 # Home Page
 # -----------------------------
 if page == "🏠 Home":
-    st.markdown('<div class="main-title">🏭 Smart Manufacturing Predictive Maintenance System</div>', unsafe_allow_html=True)
-
-    st.write("""
-    An AI-powered manufacturing analytics platform that predicts machine failure risk,
-    calculates machine health score, and provides maintenance recommendations.
-    """)
-
     model, scaler, feature_names, best_model_name = load_model_assets()
+
+    st.markdown("""
+    <div class="hero">
+        <div class="hero-badge">AI-Powered Industrial Monitoring</div>
+        <div class="hero-title">SmartFactory AI: Predictive Maintenance Intelligence Platform</div>
+        <div class="hero-subtitle">
+            A company-inspired industrial AI prototype that analyzes machine operating signals,
+            predicts equipment failure risk, estimates machine health, and recommends preventive
+            maintenance actions before breakdown occurs.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     col1, col2, col3, col4 = st.columns(4)
 
-    col1.metric("Dataset Records", "10,000")
-    col2.metric("Best Model", best_model_name)
-    col3.metric("Features Used", len(feature_names))
-    col4.metric("System Status", "Active ✅")
+    with col1:
+        st.markdown("""
+        <div class="metric-card">
+            <div class="metric-label">Machine Records</div>
+            <div class="metric-value">10,000</div>
+            <div class="metric-subtitle">Representative industrial sensor records</div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    st.divider()
+    with col2:
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-label">Best Model</div>
+            <div class="metric-value">{best_model_name}</div>
+            <div class="metric-subtitle">Selected using evaluation metrics</div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    st.subheader("Project Workflow")
+    with col3:
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-label">Features Used</div>
+            <div class="metric-value">{len(feature_names)}</div>
+            <div class="metric-subtitle">Sensor + engineered features</div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    st.markdown("""
-    1. Data Collection using AI4I 2020 Predictive Maintenance Dataset  
-    2. Exploratory Data Analysis  
-    3. Data Cleaning and Feature Engineering  
-    4. Model Training and Evaluation  
-    5. Explainable AI using SHAP  
-    6. Streamlit Dashboard Deployment  
-    """)
+    with col4:
+        st.markdown("""
+        <div class="metric-card">
+            <div class="metric-label">System Status</div>
+            <div class="metric-value">Active</div>
+            <div class="metric-subtitle">Dashboard running locally</div>
+        </div>
+        """, unsafe_allow_html=True)
 
+    st.markdown('<div class="section-title">Project Workflow</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-subtitle">End-to-end ML pipeline followed in the project.</div>', unsafe_allow_html=True)
+
+    workflow = [
+        "Manufacturing use-case understanding and machine failure problem framing",
+        "Representative industrial machine sensor data preparation",
+        "Exploratory analysis of machine operating behavior",
+        "Data cleaning and smart feature engineering",
+        "Training multiple predictive maintenance models",
+        "Model evaluation using Precision, Recall, F1 Score, ROC-AUC, and Confusion Matrix",
+        "Explainable AI using feature importance and SHAP-based insights",
+        "Interactive dashboard for machine health monitoring and maintenance decisions"
+    ]
+
+    for i, step in enumerate(workflow, start=1):
+        st.markdown(f"""
+        <div class="workflow-step">
+            <b>{i}.</b> {step}
+        </div>
+        """, unsafe_allow_html=True)
 # -----------------------------
 # Prediction Page
 # -----------------------------
 elif page == "🤖 Predict Failure":
     model, scaler, feature_names, best_model_name = load_model_assets()
 
-    st.title("🤖 Machine Failure Prediction")
+    st.title("🤖 Predictive Maintenance Engine")
 
-    st.write(f"Using best trained model: **{best_model_name}**")
-
+    st.write(f"Active AI Model: **{best_model_name}**")
+    st.caption("Enter machine operating parameters to estimate failure risk and maintenance priority.")
     col1, col2 = st.columns(2)
 
     with col1:
@@ -208,29 +238,64 @@ elif page == "🤖 Predict Failure":
         )
 
         st.divider()
-        st.subheader("Prediction Results")
+
+        st.markdown('<div class="section-title">Prediction Results</div>', unsafe_allow_html=True)
+
+        if probability < 0.30:
+            card_class = "result-card-low"
+        elif probability < 0.70:
+            card_class = "result-card-medium"
+        else:
+            card_class = "result-card-high"
 
         c1, c2, c3 = st.columns(3)
 
-        c1.metric("Failure Probability", f"{probability * 100:.2f}%")
-        c2.metric("Machine Health Score", f"{health_score}%")
-        c3.metric("Risk Level", f"{risk_icon} {risk_level}")
+        with c1:
+            st.markdown(f"""
+            <div class="{card_class}">
+                <div class="result-title">Failure Probability</div>
+                <div class="result-value">{probability * 100:.2f}%</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        with c2:
+            st.markdown(f"""
+            <div class="{card_class}">
+                <div class="result-title">Machine Health Score</div>
+                <div class="result-value">{health_score}%</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        with c3:
+            st.markdown(f"""
+            <div class="{card_class}">
+                <div class="result-title">Risk Level</div>
+                <div class="result-value">{risk_icon} {risk_level}</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        st.progress(int(health_score))
 
         if prediction == 1:
             st.error("⚠️ Machine Failure Risk Detected")
         else:
             st.success("✅ Machine Operating Normally")
 
-        st.info(f"🔧 Recommendation: {recommendation}")
+        st.markdown(f"""
+        <div class="recommendation-box">
+            <b>🔧 Maintenance Recommendation</b><br>
+            {recommendation}
+        </div>
+        """, unsafe_allow_html=True)
 
-        with st.expander("View Engineered Input Features"):
+        with st.expander("View Processed Machine Signal Features"):
             st.dataframe(input_data)
 
 # -----------------------------
 # Analytics Page
 # -----------------------------
 elif page == "📊 Analytics":
-    st.title("📊 Model Analytics")
+    st.title("📊 Predictive Maintenance Analytics")
 
     eval_file = REPORTS_PATH / "model_evaluation_results.csv"
     training_file = REPORTS_PATH / "model_training_time_comparison.csv"
@@ -282,7 +347,7 @@ elif page == "📊 Analytics":
 # Explainability Page
 # -----------------------------
 elif page == "🧠 Explainability":
-    st.title("🧠 Explainability & Feature Insights")
+    st.title("🧠 Explainable AI Insights")
 
     feature_file = REPORTS_PATH / "best_model_feature_importance.csv"
     shap_file = REPORTS_PATH / "shap_feature_importance.csv"
@@ -290,7 +355,7 @@ elif page == "🧠 Explainability":
     if feature_file.exists():
         importance_df = pd.read_csv(feature_file)
 
-        st.subheader("Best Model Feature Importance")
+        st.subheader("Key Machine Signals Influencing Prediction")
         st.dataframe(importance_df)
 
         fig, ax = plt.subplots(figsize=(10, 6))
@@ -313,7 +378,7 @@ elif page == "🧠 Explainability":
     if shap_file.exists():
         shap_df = pd.read_csv(shap_file)
 
-        st.subheader("SHAP Feature Importance")
+        st.subheader("SHAP-Based Sensor Contribution Analysis")
         st.dataframe(shap_df)
 
         fig, ax = plt.subplots(figsize=(10, 6))
@@ -336,14 +401,33 @@ elif page == "ℹ️ About":
     st.title("ℹ️ About Project")
 
     st.markdown("""
-    ## Smart Manufacturing Data Analytics and Predictive Maintenance System Using ML
+    ## SmartFactory AI: Predictive Maintenance Intelligence Platform
 
-    This project predicts machine failure risk using sensor-based manufacturing data.
+    This project is a company-inspired predictive maintenance prototype designed for smart manufacturing environments.
 
-    ### Dataset
-    AI4I 2020 Predictive Maintenance Dataset
+    The system analyzes machine operating parameters such as temperature, rotational speed, torque, and tool wear to estimate machine failure probability, machine health score, risk level, and maintenance recommendations.
+
+    The project demonstrates how manufacturing companies can use machine learning to reduce unplanned downtime, improve maintenance planning, and support data-driven operational decisions.
+
+    ### Data Usage Note
+
+    Due to confidentiality and limited access to real company machine logs, representative industrial machine sensor records were used for prototype development.
+
+    The same system can be adapted to real manufacturing machines when live sensor data or historical maintenance logs become available.
+
+    ### Key Capabilities
+
+    - Machine failure risk prediction
+    - Failure probability estimation
+    - Machine health score generation
+    - Risk level classification
+    - Preventive maintenance recommendation
+    - Model performance analytics
+    - Explainable AI based feature insights
+    - Interactive smart manufacturing dashboard
 
     ### Technologies Used
+
     - Python
     - Pandas
     - NumPy
@@ -353,12 +437,7 @@ elif page == "ℹ️ About":
     - Streamlit
     - GitHub
 
-    ### Main Features
-    - Machine failure prediction
-    - Failure probability
-    - Machine health score
-    - Risk level classification
-    - Maintenance recommendation
-    - Model analytics
-    - Explainable AI insights
+    ### Project Purpose
+
+    The objective of this system is to support smart manufacturing operations by predicting possible machine failures before breakdown and enabling data-driven maintenance decisions.
     """)
