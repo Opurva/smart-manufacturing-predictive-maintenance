@@ -4,6 +4,8 @@ import joblib
 from pathlib import Path
 import matplotlib.pyplot as plt
 import seaborn as sns
+import plotly.graph_objects as go
+from datetime import datetime
 
 # -----------------------------
 # Page Config
@@ -74,7 +76,57 @@ def get_recommendation(probability, tool_wear, torque, temp_diff):
         return "Medium risk detected. Schedule preventive maintenance soon."
     else:
         return "Machine is operating normally. Continue routine monitoring."
+    
+def create_health_gauge(health_score):
+    fig = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=health_score,
+        title={"text": "Machine Health Score"},
+        number={"suffix": "%"},
+        gauge={
+            "axis": {"range": [0, 100]},
+            "bar": {"color": "#22c55e"},
+            "steps": [
+                {"range": [0, 40], "color": "#7f1d1d"},
+                {"range": [40, 70], "color": "#713f12"},
+                {"range": [70, 100], "color": "#064e3b"},
+            ],
+            "threshold": {
+                "line": {"color": "white", "width": 4},
+                "thickness": 0.75,
+                "value": health_score
+            }
+        }
+    ))
 
+    fig.update_layout(
+        height=320,
+        paper_bgcolor="rgba(0,0,0,0)",
+        font={"color": "white"}
+    )
+
+    return fig
+
+
+def save_prediction_history(input_data, probability, health_score, risk_level, recommendation):
+    history_file = REPORTS_PATH / "prediction_history.csv"
+
+    record = input_data.copy()
+    record["Prediction Time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    record["Failure Probability"] = round(probability * 100, 2)
+    record["Machine Health Score"] = health_score
+    record["Risk Level"] = risk_level
+    record["Recommendation"] = recommendation
+
+    if history_file.exists():
+        history_df = pd.read_csv(history_file)
+        history_df = pd.concat([history_df, record], ignore_index=True)
+    else:
+        history_df = record
+
+    history_df.to_csv(history_file, index=False)
+
+    return history_df
 
 # -----------------------------
 # Sidebar
@@ -237,6 +289,14 @@ elif page == "🤖 Predict Failure":
             temp_diff
         )
 
+        history_df = save_prediction_history(
+            input_data,
+            probability,
+            health_score,
+            risk_level,
+            recommendation
+        )
+
         st.divider()
 
         st.markdown('<div class="section-title">Prediction Results</div>', unsafe_allow_html=True)
@@ -276,6 +336,26 @@ elif page == "🤖 Predict Failure":
 
         st.progress(int(health_score))
 
+        g1, g2 = st.columns([1, 1])
+
+        with g1:
+            st.plotly_chart(
+                create_health_gauge(health_score),
+                use_container_width=True
+            )
+
+        with g2:
+            st.markdown("### Failure Risk Indicator")
+            st.progress(int(probability * 100))
+
+            st.markdown(f"""
+            <div class="glass-card">
+                <b>Failure Probability:</b> {probability * 100:.2f}%<br>
+                <b>Machine Health:</b> {health_score}%<br>
+                <b>Risk Category:</b> {risk_icon} {risk_level}
+            </div>
+            """, unsafe_allow_html=True)
+
         if prediction == 1:
             st.error("⚠️ Machine Failure Risk Detected")
         else:
@@ -290,6 +370,27 @@ elif page == "🤖 Predict Failure":
 
         with st.expander("View Processed Machine Signal Features"):
             st.dataframe(input_data)
+
+        st.divider()
+
+        st.markdown('<div class="section-title">Prediction History</div>', unsafe_allow_html=True)
+
+        history_file = REPORTS_PATH / "prediction_history.csv"
+
+        if history_file.exists():
+            history_df = pd.read_csv(history_file)
+            st.dataframe(history_df.tail(10), use_container_width=True)
+
+            csv_data = history_df.to_csv(index=False).encode("utf-8")
+
+            st.download_button(
+                label="Download Prediction History",
+                data=csv_data,
+                file_name="prediction_history.csv",
+                mime="text/csv"
+            )
+        else:
+            st.info("No prediction history available yet.")
 
 # -----------------------------
 # Analytics Page

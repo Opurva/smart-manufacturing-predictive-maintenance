@@ -219,3 +219,21 @@ section[data-testid="stSidebar"] h3 {
 footer {
     visibility: hidden;
 }
+
+/* ---------- Prediction History and Gauge Cards ---------- */
+
+.glass-card b {
+    color: #f8fafc;
+}
+
+.stProgress > div > div > div > div {
+    background: linear-gradient(90deg, #22c55e, #eab308, #ef4444);
+}
+
+div[data-testid="stDownloadButton"] button {
+    border-radius: 12px;
+    background: linear-gradient(135deg, #0ea5e9, #22c55e);
+    color: white;
+    font-weight: 800;
+    border: none;
+}
