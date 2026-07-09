@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.graph_objects as go
 from datetime import datetime
-
+import plotly.express as px
 # -----------------------------
 # Page Config
 # -----------------------------
@@ -127,6 +127,41 @@ def save_prediction_history(input_data, probability, health_score, risk_level, r
     history_df.to_csv(history_file, index=False)
 
     return history_df
+
+def style_plotly_chart(fig):
+    fig.update_layout(
+        template="plotly_dark",
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(15,23,42,0.65)",
+        font=dict(
+            color="#e5e7eb",
+            family="Arial"
+        ),
+        title=dict(
+            font=dict(size=22, color="#f8fafc"),
+            x=0.02
+        ),
+        margin=dict(l=40, r=30, t=70, b=40),
+        hoverlabel=dict(
+            bgcolor="#020617",
+            font_size=13,
+            font_color="#f8fafc"
+        )
+    )
+
+    fig.update_xaxes(
+        showgrid=False,
+        zeroline=False,
+        tickfont=dict(color="#cbd5e1")
+    )
+
+    fig.update_yaxes(
+        gridcolor="rgba(148,163,184,0.18)",
+        zeroline=False,
+        tickfont=dict(color="#cbd5e1")
+    )
+
+    return fig
 
 # -----------------------------
 # Sidebar
@@ -398,48 +433,209 @@ elif page == "🤖 Predict Failure":
 elif page == "📊 Analytics":
     st.title("📊 Predictive Maintenance Analytics")
 
+    st.caption(
+        "Model performance analysis, training efficiency, and predictive maintenance benchmarking."
+    )
+
     eval_file = REPORTS_PATH / "model_evaluation_results.csv"
     training_file = REPORTS_PATH / "model_training_time_comparison.csv"
 
     if eval_file.exists():
         results_df = pd.read_csv(eval_file)
 
-        st.subheader("Model Evaluation Results")
-        st.dataframe(results_df)
+        # -----------------------------
+        # KPI Cards
+        # -----------------------------
+        best_model_row = results_df.sort_values(
+            by="F1 Score",
+            ascending=False
+        ).iloc[0]
+
+        k1, k2, k3, k4 = st.columns(4)
+
+        with k1:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Best Model</div>
+                <div class="metric-value">{best_model_row["Model"]}</div>
+                <div class="metric-subtitle">Selected by F1 Score</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        with k2:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Accuracy</div>
+                <div class="metric-value">{best_model_row["Accuracy"]:.2%}</div>
+                <div class="metric-subtitle">Overall correct predictions</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        with k3:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Recall</div>
+                <div class="metric-value">{best_model_row["Recall"]:.2%}</div>
+                <div class="metric-subtitle">Failure detection ability</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        with k4:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">F1 Score</div>
+                <div class="metric-value">{best_model_row["F1 Score"]:.2%}</div>
+                <div class="metric-subtitle">Balanced model performance</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        st.divider()
+
+        # -----------------------------
+        # Evaluation Table
+        # -----------------------------
+        st.markdown(
+            '<div class="section-title">Model Evaluation Results</div>',
+            unsafe_allow_html=True
+        )
+
+        st.dataframe(
+            results_df,
+            use_container_width=True
+        )
+
+        # -----------------------------
+        # Metric Comparison Chart
+        # -----------------------------
+        st.markdown(
+            '<div class="section-title">Performance Comparison</div>',
+            unsafe_allow_html=True
+        )
 
         metric = st.selectbox(
-            "Select Metric",
+            "Select Evaluation Metric",
             ["Accuracy", "Precision", "Recall", "F1 Score", "ROC AUC"]
         )
 
-        fig, ax = plt.subplots(figsize=(8, 5))
-        sns.barplot(data=results_df, x="Model", y=metric, ax=ax)
-        ax.set_title(f"{metric} Comparison")
-        ax.set_ylim(0, 1)
-        ax.tick_params(axis="x", rotation=15)
-        st.pyplot(fig)
+        plot_df = results_df.copy()
+        plot_df["Metric Label"] = (plot_df[metric] * 100).round(2).astype(str) + "%"
+
+        fig = px.bar(
+            plot_df,
+            x="Model",
+            y=metric,
+            text="Metric Label",
+            color=metric,
+            color_continuous_scale=["#ef4444", "#eab308", "#22c55e"],
+            title=f"{metric} Comparison Across Models"
+        )
+
+        fig.update_traces(
+            textposition="outside",
+            marker_line_width=0,
+            hovertemplate="<b>%{x}</b><br>" + metric + ": %{y:.2%}<extra></extra>"
+        )
+
+        fig.update_layout(
+            yaxis_range=[0, 1.08],
+            coloraxis_showscale=False,
+            height=460
+        )
+
+        fig = style_plotly_chart(fig)
+
+        st.plotly_chart(fig, use_container_width=True)
+
+
+        # -----------------------------
+        # Full Metric Heatmap
+        # -----------------------------
+        st.markdown(
+            '<div class="section-title">Model Performance Heatmap</div>',
+            unsafe_allow_html=True
+        )
+
+        heatmap_data = results_df.set_index("Model")[
+            ["Accuracy", "Precision", "Recall", "F1 Score", "ROC AUC"]
+        ]
+
+        fig = px.imshow(
+            heatmap_data,
+            text_auto=".3f",
+            aspect="auto",
+            color_continuous_scale="YlGnBu",
+            title="Model Performance Heatmap",
+            labels=dict(
+                x="Evaluation Metric",
+                y="Machine Learning Model",
+                color="Score"
+            )
+        )
+
+        fig.update_layout(
+            height=430,
+            coloraxis_colorbar=dict(
+                title="Score"
+            )
+        )
+
+        fig = style_plotly_chart(fig)
+
+        st.plotly_chart(fig, use_container_width=True)
 
     else:
         st.warning("Model evaluation results file not found.")
 
     st.divider()
 
+    # -----------------------------
+    # Training Time Section
+    # -----------------------------
     if training_file.exists():
         training_df = pd.read_csv(training_file)
 
-        st.subheader("Training Time Comparison")
-        st.dataframe(training_df)
+        st.markdown(
+            '<div class="section-title">Training Time Analysis</div>',
+            unsafe_allow_html=True
+        )
 
-        fig, ax = plt.subplots(figsize=(8, 5))
-        sns.barplot(
-            data=training_df,
+        st.dataframe(
+            training_df,
+            use_container_width=True
+        )
+
+        training_plot_df = training_df.copy()
+        training_plot_df["Time Label"] = training_plot_df["Training Time (seconds)"].round(4).astype(str) + "s"
+
+        fig = px.bar(
+            training_plot_df,
             x="Model",
             y="Training Time (seconds)",
-            ax=ax
+            text="Time Label",
+            color="Training Time (seconds)",
+            color_continuous_scale=["#22c55e", "#38bdf8", "#6366f1"],
+            title="Training Time Comparison"
         )
-        ax.set_title("Training Time Comparison")
-        ax.tick_params(axis="x", rotation=15)
-        st.pyplot(fig)
+
+        fig.update_traces(
+            textposition="outside",
+            marker_line_width=0,
+            hovertemplate="<b>%{x}</b><br>Training Time: %{y:.4f}s<extra></extra>"
+        )
+
+        fig.update_layout(
+            coloraxis_showscale=False,
+            height=460
+        )
+
+        fig = style_plotly_chart(fig)
+
+        st.plotly_chart(fig, use_container_width=True)
+
+        st.info(
+            "Training time helps compare computational efficiency. "
+            "However, for predictive maintenance, recall and F1 score are usually more important than speed alone."
+        )
 
     else:
         st.warning("Training time comparison file not found.")

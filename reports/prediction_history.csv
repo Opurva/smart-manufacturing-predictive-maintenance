@@ -1,3 +1,4 @@
 Type,Air temperature [K],Process temperature [K],Rotational speed [rpm],Torque [Nm],Tool wear [min],TWF,HDF,PWF,OSF,RNF,Temperature Difference,Mechanical Power,Wear Rate,Thermal Stress,Prediction Time,Failure Probability,Machine Health Score,Risk Level,Recommendation
 0,298.0,308.0,1500,40.0,100,0,0,0,0,0,10.0,60000.0,0.0666666666222222,400.0,2026-07-09 21:29:11,0.03,99.97,Low Risk,Machine is operating normally. Continue routine monitoring.
-0,320.0,308.0,1500,40.0,100,0,0,0,0,0,-12.0,60000.0,0.06666666662222222,-480.0,2026-07-09 21:29:35,53.78,46.22,Medium Risk,Medium risk detected. Schedule preventive maintenance soon.
+0,320.0,308.0,1500,40.0,100,0,0,0,0,0,-12.0,60000.0,0.0666666666222222,-480.0,2026-07-09 21:29:35,53.78,46.22,Medium Risk,Medium risk detected. Schedule preventive maintenance soon.
+0,321.0,308.0,1500,40.0,100,0,0,0,0,0,-13.0,60000.0,0.06666666662222222,-520.0,2026-07-09 21:36:52,62.8,37.2,Medium Risk,Medium risk detected. Schedule preventive maintenance soon.
