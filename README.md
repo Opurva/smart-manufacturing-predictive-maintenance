@@ -19,6 +19,8 @@ This project demonstrates how machine learning can support predictive maintenanc
 
 The system predicts machine failure risk and provides actionable maintenance insights through an interactive Streamlit dashboard.
 
+## Live Demo
+https://smart-manufacturing-predictive-maintenance.streamlit.app/
 ---
 
 ## Data Usage Note
