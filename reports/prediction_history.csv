@@ -1,4 +1,11 @@
 Type,Air temperature [K],Process temperature [K],Rotational speed [rpm],Torque [Nm],Tool wear [min],TWF,HDF,PWF,OSF,RNF,Temperature Difference,Mechanical Power,Wear Rate,Thermal Stress,Prediction Time,Failure Probability,Machine Health Score,Risk Level,Recommendation
 0,298.0,308.0,1500,40.0,100,0,0,0,0,0,10.0,60000.0,0.0666666666222222,400.0,2026-07-09 21:29:11,0.03,99.97,Low Risk,Machine is operating normally. Continue routine monitoring.
 0,320.0,308.0,1500,40.0,100,0,0,0,0,0,-12.0,60000.0,0.0666666666222222,-480.0,2026-07-09 21:29:35,53.78,46.22,Medium Risk,Medium risk detected. Schedule preventive maintenance soon.
-0,321.0,308.0,1500,40.0,100,0,0,0,0,0,-13.0,60000.0,0.06666666662222222,-520.0,2026-07-09 21:36:52,62.8,37.2,Medium Risk,Medium risk detected. Schedule preventive maintenance soon.
+0,321.0,308.0,1500,40.0,100,0,0,0,0,0,-13.0,60000.0,0.0666666666222222,-520.0,2026-07-09 21:36:52,62.8,37.2,Medium Risk,Medium risk detected. Schedule preventive maintenance soon.
+1,298.0,308.0,1500,40.0,100,0,0,0,0,0,10.0,60000.0,0.0666666666222222,400.0,2026-07-10 15:32:36,0.05,99.95,Low Risk,Machine is operating normally. Continue routine monitoring.
+0,315.0,335.0,1200,75.0,230,0,0,0,0,0,20.0,90000.0,0.1916666665069444,1500.0,2026-07-10 15:33:33,0.19,99.81,Low Risk,Tool wear is high. Schedule tool inspection or replacement.
+0,315.0,335.0,1200,40.0,230,0,0,0,0,0,20.0,48000.0,0.1916666665069444,800.0,2026-07-10 15:34:04,0.06,99.94,Low Risk,Tool wear is high. Schedule tool inspection or replacement.
+0,315.0,335.0,1200,40.0,230,0,0,0,0,0,20.0,48000.0,0.1916666665069444,800.0,2026-07-10 15:34:05,0.06,99.94,Low Risk,Tool wear is high. Schedule tool inspection or replacement.
+0,315.0,335.0,1200,40.0,230,0,0,0,0,0,20.0,48000.0,0.1916666665069444,800.0,2026-07-10 15:34:07,0.06,99.94,Low Risk,Tool wear is high. Schedule tool inspection or replacement.
+0,315.0,335.0,1200,40.0,230,0,0,0,0,0,20.0,48000.0,0.1916666665069444,800.0,2026-07-10 15:34:10,0.06,99.94,Low Risk,Tool wear is high. Schedule tool inspection or replacement.
+0,340.0,335.0,1200,40.0,100,0,0,0,0,0,-5.0,48000.0,0.08333333326388888,-200.0,2026-07-10 15:34:39,88.52,11.48,High Risk,"Immediate maintenance required. Inspect tool wear, torque load, and cooling system."

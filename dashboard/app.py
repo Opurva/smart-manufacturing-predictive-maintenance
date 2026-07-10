@@ -192,12 +192,12 @@ if page == "🏠 Home":
 
     st.markdown("""
     <div class="hero">
-        <div class="hero-badge">AI-Powered Industrial Monitoring</div>
+        <div class="hero-badge">2026-Ready Industrial AI Prototype</div>
         <div class="hero-title">SmartFactory AI: Predictive Maintenance Intelligence Platform</div>
         <div class="hero-subtitle">
-            A company-inspired industrial AI prototype that analyzes machine operating signals,
-            predicts equipment failure risk, estimates machine health, and recommends preventive
-            maintenance actions before breakdown occurs.
+            A company-inspired industrial intelligence system that analyzes machine operating signals,
+            predicts equipment failure risk, estimates health score, and recommends preventive maintenance
+            actions before breakdown occurs.
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -216,8 +216,8 @@ if page == "🏠 Home":
     with col2:
         st.markdown(f"""
         <div class="metric-card">
-            <div class="metric-label">Best Model</div>
-            <div class="metric-value">{best_model_name}</div>
+            <div class="metric-label">Active AI Model</div>
+            <div class="metric-value" style="font-size:26px;">{best_model_name}</div>
             <div class="metric-subtitle">Selected using evaluation metrics</div>
         </div>
         """, unsafe_allow_html=True)
@@ -225,7 +225,7 @@ if page == "🏠 Home":
     with col3:
         st.markdown(f"""
         <div class="metric-card">
-            <div class="metric-label">Features Used</div>
+            <div class="metric-label">Machine Signals</div>
             <div class="metric-value">{len(feature_names)}</div>
             <div class="metric-subtitle">Sensor + engineered features</div>
         </div>
@@ -234,32 +234,75 @@ if page == "🏠 Home":
     with col4:
         st.markdown("""
         <div class="metric-card">
-            <div class="metric-label">System Status</div>
-            <div class="metric-value">Active</div>
-            <div class="metric-subtitle">Dashboard running locally</div>
+            <div class="metric-label">System Mode</div>
+            <div class="metric-value">Live</div>
+            <div class="metric-subtitle">Prototype dashboard active</div>
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown('<div class="section-title">Project Workflow</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-subtitle">End-to-end ML pipeline followed in the project.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">Platform Capabilities</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-subtitle">Designed as a decision-support tool for smart manufacturing maintenance teams.</div>', unsafe_allow_html=True)
+
+    cap1, cap2, cap3 = st.columns(3)
+
+    with cap1:
+        st.markdown("""
+        <div class="premium-card">
+            <div class="capability-icon">🤖</div>
+            <div class="capability-title">Failure Risk Prediction</div>
+            <div class="capability-text">
+                Predicts whether a machine is likely to fail based on operating parameters such as temperature,
+                speed, torque, and tool wear.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with cap2:
+        st.markdown("""
+        <div class="premium-card">
+            <div class="capability-icon">🩺</div>
+            <div class="capability-title">Machine Health Score</div>
+            <div class="capability-text">
+                Converts model output into a simple health score so maintenance teams can quickly understand
+                machine condition.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with cap3:
+        st.markdown("""
+        <div class="premium-card">
+            <div class="capability-icon">🔧</div>
+            <div class="capability-title">Maintenance Recommendation</div>
+            <div class="capability-text">
+                Provides action-oriented maintenance suggestions based on risk probability and machine signal behavior.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown('<div class="section-title">Industrial ML Workflow</div>', unsafe_allow_html=True)
 
     workflow = [
-        "Manufacturing use-case understanding and machine failure problem framing",
-        "Representative industrial machine sensor data preparation",
-        "Exploratory analysis of machine operating behavior",
-        "Data cleaning and smart feature engineering",
-        "Training multiple predictive maintenance models",
-        "Model evaluation using Precision, Recall, F1 Score, ROC-AUC, and Confusion Matrix",
-        "Explainable AI using feature importance and SHAP-based insights",
-        "Interactive dashboard for machine health monitoring and maintenance decisions"
+        ("01", "Problem Framing", "Manufacturing downtime and machine failure risk analysis"),
+        ("02", "Sensor Data Preparation", "Machine operating signals cleaned and transformed"),
+        ("03", "Feature Engineering", "Thermal stress, mechanical power, wear rate, and temperature difference created"),
+        ("04", "Model Training", "Multiple ML models trained and benchmarked"),
+        ("05", "Model Evaluation", "Models compared using precision, recall, F1 score, ROC-AUC, and confusion matrix"),
+        ("06", "Explainable AI", "Feature importance and SHAP-based insights generated"),
+        ("07", "Dashboard System", "Interactive predictive maintenance dashboard built for decision support")
     ]
 
-    for i, step in enumerate(workflow, start=1):
+    for number, title, desc in workflow:
         st.markdown(f"""
-        <div class="workflow-step">
-            <b>{i}.</b> {step}
+        <div class="timeline-step">
+            <div class="timeline-number">{number}</div>
+            <div>
+                <div class="timeline-title">{title}</div>
+                <div class="timeline-desc">{desc}</div>
+            </div>
         </div>
         """, unsafe_allow_html=True)
+
 # -----------------------------
 # Prediction Page
 # -----------------------------
@@ -646,95 +689,259 @@ elif page == "📊 Analytics":
 elif page == "🧠 Explainability":
     st.title("🧠 Explainable AI Insights")
 
+    st.caption(
+        "Understand which machine signals influence failure prediction and maintenance decisions."
+    )
+
     feature_file = REPORTS_PATH / "best_model_feature_importance.csv"
     shap_file = REPORTS_PATH / "shap_feature_importance.csv"
 
+    # -----------------------------
+    # Feature Importance Section
+    # -----------------------------
     if feature_file.exists():
         importance_df = pd.read_csv(feature_file)
 
-        st.subheader("Key Machine Signals Influencing Prediction")
-        st.dataframe(importance_df)
+        st.markdown(
+            '<div class="section-title">Key Machine Signals Influencing Prediction</div>',
+            unsafe_allow_html=True
+        )
 
-        fig, ax = plt.subplots(figsize=(10, 6))
+        st.dataframe(
+            importance_df,
+            use_container_width=True
+        )
+
         value_col = "Importance" if "Importance" in importance_df.columns else "Mean SHAP Value"
 
-        sns.barplot(
-            data=importance_df.head(10),
+        top_importance = importance_df.head(10).copy()
+
+        fig = px.bar(
+            top_importance.sort_values(by=value_col, ascending=True),
             x=value_col,
             y="Feature",
-            ax=ax
+            orientation="h",
+            text=value_col,
+            color=value_col,
+            color_continuous_scale=["#38bdf8", "#6366f1", "#22c55e"],
+            title="Top 10 Important Machine Signals"
         )
-        ax.set_title("Top Feature Importance")
-        st.pyplot(fig)
+
+        fig.update_traces(
+            texttemplate="%{text:.4f}",
+            textposition="outside",
+            marker_line_width=0,
+            hovertemplate="<b>%{y}</b><br>Importance: %{x:.4f}<extra></extra>"
+        )
+
+        fig.update_layout(
+            height=520,
+            coloraxis_showscale=False,
+            xaxis_title="Importance Score",
+            yaxis_title="Machine Signal"
+        )
+
+        fig = style_plotly_chart(fig)
+
+        st.plotly_chart(fig, use_container_width=True)
 
     else:
         st.warning("Feature importance file not found.")
 
     st.divider()
 
+    # -----------------------------
+    # SHAP Importance Section
+    # -----------------------------
     if shap_file.exists():
         shap_df = pd.read_csv(shap_file)
 
-        st.subheader("SHAP-Based Sensor Contribution Analysis")
-        st.dataframe(shap_df)
+        st.markdown(
+            '<div class="section-title">SHAP-Based Sensor Contribution Analysis</div>',
+            unsafe_allow_html=True
+        )
 
-        fig, ax = plt.subplots(figsize=(10, 6))
-        sns.barplot(
-            data=shap_df.head(10),
+        st.markdown("""
+        SHAP values explain how much each feature contributes to the model's prediction.
+        Higher SHAP values indicate stronger influence on machine failure risk prediction.
+        """)
+
+        st.dataframe(
+            shap_df,
+            use_container_width=True
+        )
+
+        top_shap = shap_df.head(10).copy()
+
+        fig = px.bar(
+            top_shap.sort_values(by="Mean SHAP Value", ascending=True),
             x="Mean SHAP Value",
             y="Feature",
-            ax=ax
+            orientation="h",
+            text="Mean SHAP Value",
+            color="Mean SHAP Value",
+            color_continuous_scale=["#0ea5e9", "#8b5cf6", "#ec4899"],
+            title="Top 10 SHAP Feature Contributions"
         )
-        ax.set_title("Top SHAP Feature Contributions")
-        st.pyplot(fig)
+
+        fig.update_traces(
+            texttemplate="%{text:.4f}",
+            textposition="outside",
+            marker_line_width=0,
+            hovertemplate="<b>%{y}</b><br>Mean SHAP Value: %{x:.4f}<extra></extra>"
+        )
+
+        fig.update_layout(
+            height=520,
+            coloraxis_showscale=False,
+            xaxis_title="Mean SHAP Value",
+            yaxis_title="Machine Signal"
+        )
+
+        fig = style_plotly_chart(fig)
+
+        st.plotly_chart(fig, use_container_width=True)
+
+        # -----------------------------
+        # Top Signal Cards
+        # -----------------------------
+        st.markdown(
+            '<div class="section-title">Top Predictive Signals</div>',
+            unsafe_allow_html=True
+        )
+
+        top3 = shap_df.head(3)
+
+        c1, c2, c3 = st.columns(3)
+
+        cards = [c1, c2, c3]
+
+        for i, (_, row) in enumerate(top3.iterrows()):
+            with cards[i]:
+                st.markdown(f"""
+                <div class="metric-card">
+                    <div class="metric-label">Rank {i + 1}</div>
+                    <div class="metric-value" style="font-size:24px;">{row["Feature"]}</div>
+                    <div class="metric-subtitle">SHAP Value: {row["Mean SHAP Value"]:.4f}</div>
+                </div>
+                """, unsafe_allow_html=True)
 
     else:
         st.warning("SHAP feature importance file not found.")
+
+    st.divider()
+
+    st.info(
+        "Explainable AI improves trust by showing which machine parameters influenced the prediction. "
+        "This helps maintenance teams understand whether risk is driven by load, temperature, tool wear, or engineered stress features."
+    )
 
 # -----------------------------
 # About Page
 # -----------------------------
 elif page == "ℹ️ About":
-    st.title("ℹ️ About Project")
+    st.markdown("""
+    <div class="hero">
+        <div class="hero-badge">Project Overview</div>
+        <div class="hero-title">About SmartFactory AI</div>
+        <div class="hero-subtitle">
+            A company-inspired predictive maintenance prototype built to demonstrate how machine learning
+            can support smart manufacturing operations through failure prediction, health monitoring,
+            and maintenance intelligence.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="section-title">Project Context</div>', unsafe_allow_html=True)
 
     st.markdown("""
-    ## SmartFactory AI: Predictive Maintenance Intelligence Platform
+    <div class="glass-card">
+        Manufacturing companies depend on continuous machine operation. Unexpected machine failures can lead to
+        production delays, increased maintenance cost, quality issues, and operational downtime.
+        <br><br>
+        This project demonstrates how machine learning can be used to analyze machine operating parameters and
+        identify possible failure risk before breakdown occurs. The system is designed as a prototype that can be
+        adapted to real company machine logs when live sensor data or historical maintenance records become available.
+    </div>
+    """, unsafe_allow_html=True)
 
-    This project is a company-inspired predictive maintenance prototype designed for smart manufacturing environments.
+    st.markdown('<div class="section-title">Data Usage Note</div>', unsafe_allow_html=True)
 
-    The system analyzes machine operating parameters such as temperature, rotational speed, torque, and tool wear to estimate machine failure probability, machine health score, risk level, and maintenance recommendations.
+    st.markdown("""
+    <div class="note-card">
+        Due to confidentiality and limited access to real company machine logs, representative industrial machine
+        sensor records were used for prototype development and testing.
+        <br><br>
+        The same pipeline can be integrated with actual company machinery once real sensor logs, machine history,
+        and maintenance records become available.
+    </div>
+    """, unsafe_allow_html=True)
 
-    The project demonstrates how manufacturing companies can use machine learning to reduce unplanned downtime, improve maintenance planning, and support data-driven operational decisions.
+    st.markdown('<div class="section-title">Core Features</div>', unsafe_allow_html=True)
 
-    ### Data Usage Note
+    f1, f2, f3 = st.columns(3)
 
-    Due to confidentiality and limited access to real company machine logs, representative industrial machine sensor records were used for prototype development.
+    with f1:
+        st.markdown("""
+        <div class="premium-card">
+            <div class="capability-icon">📡</div>
+            <div class="capability-title">Sensor-Based Monitoring</div>
+            <div class="capability-text">
+                Uses machine operating parameters such as temperature, rotational speed, torque, and tool wear.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    The same system can be adapted to real manufacturing machines when live sensor data or historical maintenance logs become available.
+    with f2:
+        st.markdown("""
+        <div class="premium-card">
+            <div class="capability-icon">🧠</div>
+            <div class="capability-title">Machine Learning Engine</div>
+            <div class="capability-text">
+                Trains and evaluates multiple ML models to identify the best predictive maintenance model.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    ### Key Capabilities
+    with f3:
+        st.markdown("""
+        <div class="premium-card">
+            <div class="capability-icon">🔍</div>
+            <div class="capability-title">Explainable AI</div>
+            <div class="capability-text">
+                Uses feature importance and SHAP-based analysis to explain which signals influence predictions.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    - Machine failure risk prediction
-    - Failure probability estimation
-    - Machine health score generation
-    - Risk level classification
-    - Preventive maintenance recommendation
-    - Model performance analytics
-    - Explainable AI based feature insights
-    - Interactive smart manufacturing dashboard
+    st.markdown('<div class="section-title">Technology Stack</div>', unsafe_allow_html=True)
 
-    ### Technologies Used
+    tech1, tech2, tech3, tech4 = st.columns(4)
 
-    - Python
-    - Pandas
-    - NumPy
-    - Scikit-learn
-    - XGBoost
-    - SHAP
-    - Streamlit
-    - GitHub
+    tech_items = [
+        ("Python", "Core programming"),
+        ("Scikit-learn", "ML modeling"),
+        ("XGBoost", "Boosting model"),
+        ("Streamlit", "Dashboard UI")
+    ]
 
-    ### Project Purpose
+    for col, (name, use) in zip([tech1, tech2, tech3, tech4], tech_items):
+        with col:
+            st.markdown(f"""
+            <div class="tech-card">
+                <div class="tech-title">{name}</div>
+                <div class="tech-desc">{use}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
-    The objective of this system is to support smart manufacturing operations by predicting possible machine failures before breakdown and enabling data-driven maintenance decisions.
-    """)
+    st.markdown('<div class="section-title">Project Purpose</div>', unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="glass-card">
+        The purpose of this project is to reduce unplanned downtime, support preventive maintenance,
+        and demonstrate how data analytics and machine learning can be applied in smart manufacturing environments.
+        <br><br>
+        This prototype can be extended with live IoT sensors, real-time dashboards, alert systems, and company-specific
+        maintenance rules in future deployment.
+    </div>
+    """, unsafe_allow_html=True)

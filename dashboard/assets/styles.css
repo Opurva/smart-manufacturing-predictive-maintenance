@@ -257,3 +257,163 @@ div[data-testid="stSelectbox"] {
     padding: 14px;
     box-shadow: 0 10px 35px rgba(0, 0, 0, 0.22);
 }
+
+/* ---------- Premium Home and About Sections ---------- */
+
+.premium-card {
+    padding: 26px;
+    border-radius: 22px;
+    background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.72));
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.28);
+    height: 100%;
+    transition: all 0.25s ease;
+}
+
+.premium-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(34, 197, 94, 0.45);
+    box-shadow: 0 18px 55px rgba(34, 197, 94, 0.13);
+}
+
+.capability-icon {
+    font-size: 34px;
+    margin-bottom: 14px;
+}
+
+.capability-title {
+    font-size: 20px;
+    font-weight: 900;
+    color: #f8fafc;
+    margin-bottom: 10px;
+}
+
+.capability-text {
+    font-size: 15px;
+    line-height: 1.65;
+    color: #cbd5e1;
+}
+
+.timeline-step {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    padding: 20px;
+    margin-bottom: 14px;
+    border-radius: 18px;
+    background: rgba(15, 23, 42, 0.72);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.20);
+}
+
+.timeline-number {
+    min-width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #2563eb, #22c55e);
+    color: white;
+    font-size: 16px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timeline-title {
+    color: #f8fafc;
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 5px;
+}
+
+.timeline-desc {
+    color: #94a3b8;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.note-card {
+    padding: 24px;
+    border-radius: 20px;
+    background: rgba(234, 179, 8, 0.10);
+    border: 1px solid rgba(234, 179, 8, 0.35);
+    color: #fef3c7;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.tech-card {
+    padding: 22px;
+    border-radius: 18px;
+    background: rgba(15, 23, 42, 0.80);
+    border: 1px solid rgba(59, 130, 246, 0.28);
+    text-align: center;
+    height: 100%;
+}
+
+.tech-title {
+    color: #f8fafc;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.tech-desc {
+    color: #94a3b8;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+/* ---------- Final UI Polish ---------- */
+
+h1, h2, h3 {
+    color: #f8fafc;
+}
+
+p, li {
+    color: #cbd5e1;
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background: rgba(148, 163, 184, 0.2);
+    margin: 28px 0;
+}
+
+/* Streamlit metric styling */
+[data-testid="stMetric"] {
+    background: rgba(15, 23, 42, 0.78);
+    padding: 18px;
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+/* Input widgets */
+[data-testid="stNumberInput"],
+[data-testid="stSelectbox"] {
+    background: rgba(15, 23, 42, 0.4);
+    border-radius: 14px;
+}
+
+/* Expander */
+.streamlit-expanderHeader {
+    background: rgba(15, 23, 42, 0.8);
+    border-radius: 12px;
+    color: #f8fafc;
+}
+
+/* Page spacing */
+.element-container {
+    margin-bottom: 0.4rem;
+}
+
+/* Better table look */
+[data-testid="stDataFrame"] {
+    background: rgba(15, 23, 42, 0.65);
+}
+
+/* Sidebar radio labels */
+section[data-testid="stSidebar"] label {
+    color: #cbd5e1;
+    font-weight: 600;
+}
